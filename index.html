@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bảng Thông Tin Học Sinh</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Bảng Thông Tin Học Sinh</h2>
+
+  <input type="text" id="nameInput" placeholder="Nhập tên (ví dụ: 6.1-01 Anh)...">
+  <button onclick="searchInfo()">Tìm</button>
+
+  <table id="infoTable" style="display: none;">
+    <thead>
+      <tr>
+        <th>Tên</th>
+        <th>Tuổi</th>
+        <th>Lớp</th>
+        <th>Trường</th>
+        <th>Đóng học phí</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <!-- Dữ liệu sẽ hiển thị tại đây -->
+    </tbody>
+  </table>
+
+  <script>
+    const data = [
+      { name: "6.1-01 Anh", age: 11, class: "6.1", address: "THCS Nguyễn Trãi", hocphi: "Có" },
+      { name: "6.1-02 An", age: 11, class: "6.1", address: "THCS Hùng Vương", hocphi: "Không" },
+      { name: "6.2-01 Khang", age: 12, class: "6.2", address: "THCS Nguyễn Du", hocphi: "Có" }
+    ];
+
+    let currentIndex = -1;
+
+    function searchInfo() {
+      const input = document.getElementById("nameInput").value.trim();
+      const index = data.findIndex(person => person.name.toLowerCase() === input.toLowerCase());
+      const table = document.getElementById("infoTable");
+      const body = document.getElementById("tableBody");
+
+      if (index !== -1) {
+        currentIndex = index;
+        const person = data[index];
+        table.style.display = "table";
+        body.innerHTML = `
+          <tr>
+            <td>${person.name}</td>
+            <td>${person.age}</td>
+            <td>${person.class}</td>
+            <td>${person.address}</td>
+            <td>${person.hocphi}</td>
+            <td><button onclick="editRow()">Chỉnh sửa</button></td>
+          </tr>
+        `;
+      } else {
+        table.style.display = "none";
+        body.innerHTML = "";
+        alert("Không tìm thấy người này.");
+      }
+    }
+
+    function editRow() {
+      const person = data[currentIndex];
+      const body = document.getElementById("tableBody");
+      body.innerHTML = `
+        <tr>
+          <td><input id="editName" value="${person.name}" /></td>
+          <td><input id="editAge" type="number" value="${person.age}" /></td>
+          <td><input id="editClass" value="${person.class}" /></td>
+          <td><input id="editAddress" value="${person.address}" /></td>
+          <td>
+            <select id="editHocphi">
+              <option value="Có" ${person.hocphi === "Có" ? "selected" : ""}>Có</option>
+              <option value="Không" ${person.hocphi === "Không" ? "selected" : ""}>Không</option>
+            </select>
+          </td>
+          <td><button onclick="saveRow()">Lưu</button></td>
+        </tr>
+      `;
+    }
+
+    function saveRow() {
+      const newName = document.getElementById("editName").value;
+      const newAge = parseInt(document.getElementById("editAge").value);
+      const newClass = document.getElementById("editClass").value;
+      const newAddress = document.getElementById("editAddress").value;
+      const newHocphi = document.getElementById("editHocphi").value;
+
+      data[currentIndex] = {
+        name: newName,
+        age: newAge,
+        class: newClass,
+        address: newAddress,
+        hocphi: newHocphi
+      };
+
+      searchInfo(); // cập nhật lại bảng sau khi lưu
+    }
+  </script>
+</body>
+</html>
